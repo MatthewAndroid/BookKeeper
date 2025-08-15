@@ -19,6 +19,13 @@ const AddBookScreen = ({ navigation }) => {
     const [genre, setGenre] = useState('');
     const [pages, setPages] = useState('');
 
+    const resetForm = () => {
+        setTitle('');
+        setAuthor('');
+        setGenre('');
+        setPages('');
+    };
+
     const handleAddBook = () => {
         if (!title.trim() || !author.trim()) {
             Alert.alert('Error', 'Title AND Author required');
@@ -38,6 +45,7 @@ const AddBookScreen = ({ navigation }) => {
             [{
                 text: 'OK',
                 onPress: () => {
+                    resetForm(); // Clear the form
                     navigation.navigate('list', { newBook });
                 }
             }]
