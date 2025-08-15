@@ -7,30 +7,37 @@ import {
     SafeAreaView,
     FlatList,
 } from 'react-native';
+
 import { useFocusEffect } from '@react-navigation/native';
 import {PlusIcon} from "../components/PlusIcon";
-import {ArrowBackIcon} from "../components/ArrowBackIcon";
 import {TrashIcon} from "../components/TrashIcon";
 import {BookIcon} from "../components/BookIcon";
 
 const ListScreen = ({ navigation, route }) => {
-    const [books, setBooks] = useState([]);
-    const bookIdCounter = useRef(1);
+    const [books, setBooks] = useState(route.params?.books || []);
+    const bookIdCounter = useRef(route.params?.nextId || 1);
 
     useFocusEffect(
         React.useCallback(() => {
             if (route.params?.newBook) {
-                setBooks(prevBooks => [...prevBooks, {
+                const updatedBooks = [...books, {
                     ...route.params.newBook,
                     id: bookIdCounter.current++
-                }]);
-                navigation.setParams({newBook: undefined});
+                }];
+                setBooks(updatedBooks);
+                navigation.setParams({
+                    newBook: undefined,
+                    books: updatedBooks,
+                    nextId: bookIdCounter.current
+                });
             }
-        }, [route.params?.newBook, navigation])
+        }, [route.params?.newBook, books, navigation])
     );
 
     const deleteBook = (bookId) => {
-        setBooks(prevBooks => prevBooks.filter(book => book.id !== bookId));
+        const updatedBooks = books.filter(book => book.id !== bookId);
+        setBooks(updatedBooks);
+        navigation.setParams({ books: updatedBooks });
     };
 
     const renderBookItem = ({ item }) => (
@@ -67,7 +74,10 @@ const ListScreen = ({ navigation, route }) => {
             </Text>
             <TouchableOpacity
                 style={styles.addButton}
-                onPress={() => navigation.navigate('add')}
+                onPress={() => navigation.navigate('add', {
+                    currentBooks: books,
+                    nextId: bookIdCounter.current
+                })}
             >
                 <PlusIcon name="add" size={20} color="#fff"/>
                 <Text style={styles.addButtonText}>Add First Book</Text>
@@ -78,16 +88,13 @@ const ListScreen = ({ navigation, route }) => {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity
-                    style={styles.backButton}
-                    onPress={() => navigation.navigate('home')} // Navigate to home instead of going back
-                >
-                    <ArrowBackIcon name="arrow-back" size={24} color="#333"/>
-                </TouchableOpacity>
                 <Text style={styles.headerTitle}>My Books</Text>
                 <TouchableOpacity
                     style={styles.addHeaderButton}
-                    onPress={() => navigation.navigate('add')}
+                    onPress={() => navigation.navigate('add', {
+                        currentBooks: books,
+                        nextId: bookIdCounter.current
+                    })}
                 >
                     <PlusIcon name="add" size={18} color="#fff"/>
                     <Text style={styles.addHeaderButtonText}>Add</Text>

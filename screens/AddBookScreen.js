@@ -13,7 +13,7 @@ import { Picker } from '@react-native-picker/picker';
 import {BookPlusIcon} from "../components/BookPlusIcon";
 import {ArrowBackIcon} from "../components/ArrowBackIcon";
 
-const AddBookScreen = ({ navigation }) => {
+const AddBookScreen = ({ navigation, route }) => {
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
     const [genre, setGenre] = useState('');
@@ -45,8 +45,12 @@ const AddBookScreen = ({ navigation }) => {
             [{
                 text: 'OK',
                 onPress: () => {
-                    resetForm(); // Clear the form
-                    navigation.navigate('list', { newBook });
+                    resetForm();
+                    navigation.navigate('list', {
+                        newBook,
+                        books: route?.params?.currentBooks || [],
+                        nextId: route?.params?.nextId || 1
+                    });
                 }
             }]
         );
