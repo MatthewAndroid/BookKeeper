@@ -27,7 +27,7 @@ const HomeScreen = ({ navigation }) => {
 
                 <TouchableOpacity
                     style={styles.primaryButton}
-                    onPress={() => navigation.navigate('MyBooks')}
+                    onPress={() => navigation.navigate('list')}
                 >
                     <ListIcon name="list" size={20} color="#fff" style={styles.buttonIcon} />
                     <Text style={styles.primaryButtonText}>View My Books</Text>
@@ -35,7 +35,7 @@ const HomeScreen = ({ navigation }) => {
 
                 <TouchableOpacity
                     style={styles.secondaryButton}
-                    onPress={() => navigation.navigate()}
+                    onPress={() => navigation.navigate('add')}
                 >
                     <PlusIcon name="add" size={20} color="#1a1a2e" />
                     <Text style={styles.secondaryButtonText}>Add New Book</Text>
